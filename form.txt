@@ -1,0 +1,240 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using System.Net;
+using System.IO;
+
+namespace open_url
+{
+    
+    public partial class Form1 : Form
+    {
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string S1="", S2="",S3="",S4="";
+            try
+            {
+                // gereftane source html :
+                using (WebClient client = new WebClient())
+                {
+                    S1 = client.DownloadString(textBox1.Text);
+                }
+                using (WebClient client = new WebClient())
+                {
+                    S3 = client.DownloadString(textBox2.Text);
+                }
+                //-------------------------------------
+
+
+
+
+
+                //S1 = "<!DOCTYPE html><html><meta charset=utf-8/><title>“„«‰ „Ê⁄Êœ</title> <head ><center><a href=http://www.promised-time.ir target=_blank><img src=header.jpg  title=promised time/ style=border:2 black ></a></center></head><body style= background-color:gray><div  id=one></div><div id=two style=text-align:center;>Home  forum   Clip    Gallery    Contact</div></body></html>";
+                //string[] v1 = S1.Split('<');
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    label4.Text = label4.Text + v1[i];
+                //}
+                //a1 = v1;
+                //using (WebClient client = new WebClient())
+                //{
+                //    S2 = client.DownloadString(textBox1.Text);
+                //}
+                //string[] v2 = S1.Split(' ');
+                //a2 = v2;
+
+
+
+
+                // hazfe tag ha:
+                for (int i = 0; i < S1.Length; i++)
+                {
+                    if(S1[i]=='<')
+                    {
+                        for (;S1[i]!='>' && i<S1.Length ; i++)
+                        {
+
+                        }
+                        //if (i<S1.Length)
+                        //{
+                        //    if (S1[i]=='>')
+                        //    {
+                        //        i++;
+                        //    }
+                        //}
+                    }
+                    else
+                    {
+                        S2 = S2 + S1[i];
+                    }
+                }
+                for (int j = 0; j < S3.Length; j++)
+                {
+                    if (S3[j] == '<')
+                    {
+                        for (; S3[j] != '>' && j < S3.Length; j++)
+                        {
+
+                        }
+                        //if (i<S1.Length)
+                        //{
+                        //    if (S1[i]=='>')
+                        //    {
+                        //        i++;
+                        //    }
+                        //}
+                    }
+                    else
+                    {
+                        S4 = S4 + S3[j];
+                    }
+                }
+
+                //---------------------------------
+
+
+
+
+                // taaein kalamat va tedade anha :
+                vahid []a1=new vahid[S1.Length];
+                long f=0,u=0;
+                string[] v1 = S1.Split(' ');
+                for (int i = 0; i < v1.Length; i++)
+                {
+                    if (v1[i]!=" ")
+	                {
+                        a1[f].sr=v1[i];
+                        for (int j = i; j < v1.Length; j++)
+                        {
+                            if (v1[j]==v1[i])
+                            {
+                                u++;
+                                v1[j] = " ";
+                            }
+                        }
+                        a1[f].c = u;
+                        u = 0;
+                        f++;
+	                }
+                    
+                }
+                //000000000000000000
+
+                vahid[] a2 = new vahid[S3.Length];
+                long q = 0, w = 0;
+                string[] v2 = S3.Split(' ');
+                for (int i = 0; i < v2.Length; i++)
+                {
+                    if (v2[i] != " ")
+                    {
+                        a2[q].sr = v2[i];
+                        for (int j = i; j < v2.Length; j++)
+                        {
+                            if (v2[j] == v2[i])
+                            {
+                                w++;
+                                v2[j] = " ";
+                            }
+                        }
+                        a2[q].c = w;
+                        w = 0;
+                        q++;
+                    }
+
+                }
+
+                //-----------------------------
+
+
+
+
+                // moghayese :
+                vahid[] a3 = new vahid[S1.Length + S3.Length];
+                long g = 0;
+                for (int i = 0; i < a1.Length; i++)
+                {
+                    for (int j = 0; j < a2.Length; j++)
+                    {
+                        if (a1[i].sr==a2[j].sr)
+                        {
+                            a3[g].sr = a1[i].sr;
+                            g++;
+                        }
+                    }
+                }
+
+
+                // taaein darsade tashaboh :
+                long vvv = 0;
+                for (int i = 0; i < a1.Length; i++)
+                {
+                    vvv += a1[i].c;
+                }
+
+                long ddd = 0;
+                for (int i = 0; i < a2.Length; i++)
+                {
+                    ddd += a2[i].c;
+                }
+
+                long yyy = 0;
+                for (int i = 0; i < a1.Length; i++)
+                {
+                    for (int j = 0; j < a3.Length; j++)
+                    {
+                        if (a1[i].sr==a3[j].sr)
+                        {
+                            yyy += a1[i].c;
+                            break;
+                        }
+                    }
+                }
+
+                long xxx = 0;
+                for (int i = 0; i < a2.Length; i++)
+                {
+                    for (int j = 0; j < a3.Length; j++)
+                    {
+                        if (a2[i].sr==a3[j].sr)
+                        {
+                            xxx += a2[i].c;
+                            break;
+                        }
+                    }
+                }
+
+                double similarity1 = yyy / vvv;
+                double similarity2 = xxx / ddd;
+
+                label6.Text = similarity1.ToString();
+                label7.Text = similarity2.ToString();
+            }
+
+
+            //----------------------------------------
+            catch
+            {
+                MessageBox.Show("An error occured.");
+            }
+
+            //finally
+            //{
+            //    MessageBox.Show(S2);
+            //}
+
+            
+
+            
+        }
+    }
+}
